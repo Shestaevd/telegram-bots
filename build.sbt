@@ -1,0 +1,114 @@
+lazy val core = (project in file("."))
+  .settings(globalSettings)
+  .settings(performance)
+  .disablePlugins(AssemblyPlugin)
+  .aggregate(
+    common,
+    hrTelegramBot,
+    orcTelegramBot
+  )
+
+lazy val common = (project in file("common"))
+  .settings(globalSettings)
+  .settings(libraryDependencies ++= commonDependencies)
+  .settings(libraryDependencies ++= dependencies.akka)
+  .settings(libraryDependencies ++= dependencies.cache)
+  .settings(libraryDependencies += dependencies.mailer)
+  .disablePlugins(AssemblyPlugin)
+
+lazy val hrTelegramBot = (project in file("hrTelegramBot"))
+  .settings(globalSettings)
+  .settings(performance)
+  .settings(ThisBuild / name := "HrTelegramBot")
+  .settings(mainClass in (Compile, run) := Some("Launcher"))
+  .settings(libraryDependencies ++= dependencies.cache)
+  .settings(mainClass in assembly := Some("Launcher"))
+  .settings(libraryDependencies += dependencies.telegram)
+  .dependsOn(common)
+
+lazy val orcTelegramBot = (project in file("orcTelegramBot"))
+  .settings(globalSettings)
+  .settings(performance)
+  .settings(ThisBuild / name := "TelegramBot")
+  .settings(mainClass in (Compile, run) := Some("ru.kvp24.Launcher"))
+  .settings(mainClass in assembly := Some("ru.kvp24.Launcher"))
+  .settings(libraryDependencies += dependencies.telegram)
+  .settings(assemblyConfig)
+  .dependsOn(common)
+
+lazy val orcViberBot = (project in file("orcViberBot"))
+  .settings(globalSettings)
+  .settings(performance)
+  .settings(ThisBuild / name := "ViberBot")
+  .settings(mainClass in (Compile, run) := Some("ru.kvp24.Launcher"))
+  .settings(mainClass in assembly := Some("ru.kvp24.Launcher"))
+  .settings(libraryDependencies += dependencies.spray)
+  .settings(libraryDependencies ++= dependencies.akka)
+  .settings(assemblyConfig)
+  .dependsOn(common)
+
+lazy val globalSettings = Seq(
+  ThisBuild / organization := "ru.kvp24.com",
+  ThisBuild / version := "0.1-SNAPSHOT",
+  ThisBuild / scalaVersion := "2.13.4",
+)
+
+lazy val performance = Seq(
+  ThisBuild / watchBeforeCommand := Watch.clearScreen
+)
+
+lazy val dependencies = new {
+  private val telegramV = "5.0.1"
+  private val slf4jV = "1.6.1"
+  private val configTypeSafeV = "1.0.2"
+
+  private val AkkaV = "2.6.8"
+  private val AkkaHttpV = "10.2.3"
+
+  private val scaffeineV = "4.0.2"
+  private val caffeineV = "3.0.0"
+
+  private val mailerV = "1.4"
+
+  private val sprayV = "10.2.4"
+
+  val telegram = "org.telegram" % "telegrambots" % telegramV
+  val slf4j = "org.slf4j" % "slf4j-simple" % slf4jV
+
+  val configTypeSafe = "com.typesafe" % "config" % configTypeSafeV
+
+  val akka = Seq(
+    "com.typesafe.akka" %% "akka-actor-typed" % AkkaV,
+    "com.typesafe.akka" %% "akka-stream" % AkkaV,
+    "com.typesafe.akka" %% "akka-http" % AkkaHttpV
+  )
+
+  val cache = Seq(
+    "com.github.ben-manes.caffeine" % "caffeine" % caffeineV,
+    "com.github.blemale" %% "scaffeine" % scaffeineV % "compile"
+  )
+
+  val mailer = "javax.mail" % "mail" % mailerV
+
+  val spray = "com.typesafe.akka" %% "akka-http-spray-json" % sprayV
+
+}
+
+lazy val commonDependencies = Seq(
+  dependencies.slf4j,
+  dependencies.configTypeSafe
+)
+
+lazy val assemblyConfig = Seq(
+  assemblyExcludedJars in assembly := {
+    (fullClasspath in assembly).value.filter { f =>
+      f.data.getPath.contains("javax/activation")
+    }
+  },
+  assemblyMergeStrategy in assembly := {
+    case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+    case PathList("module-info.class") => MergeStrategy.discard
+    case "application.conf" => MergeStrategy.concat
+    case keep => (assemblyMergeStrategy in assembly).value(keep)
+  }
+)

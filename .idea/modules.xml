@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common.iml" filepath="$PROJECT_DIR$/.idea/modules/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core.iml" filepath="$PROJECT_DIR$/.idea/modules/core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core-build.iml" filepath="$PROJECT_DIR$/.idea/modules/core-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/hrTelegramBot.iml" filepath="$PROJECT_DIR$/.idea/modules/hrTelegramBot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/orcTelegramBot.iml" filepath="$PROJECT_DIR$/.idea/modules/orcTelegramBot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/orcViberBot.iml" filepath="$PROJECT_DIR$/.idea/modules/orcViberBot.iml" />
+    </modules>
+  </component>
+</project>
