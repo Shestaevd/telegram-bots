@@ -3,8 +3,22 @@ image: nexus.itecos.com:5000/java-app:15
 stages:
   - build
 
+.docker_support:
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_HOST: tcp://localhost:2375
+  services:
+    - name: docker:18.09.7-dind
+      entrypoint:
+        - /bin/sh
+        - -c
+        - dockerd-entrypoint.sh --insecure-registry nexus.itecos.com:5000 --insecure-registry registry.sel.itecos.com:5000 || exit
+
+
+
 build:
   image: nexus.itecos.com:5000/sbt-docker-build-13:0.1
+  extends: .docker_support
   stage: build
   before_script:
     - git branch
