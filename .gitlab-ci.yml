@@ -1,10 +1,10 @@
-image: alpine
+image: nexus.itecos.com:5000/java-app:15
 
 stages:
   - build
 
 build:
-  image: docker:latest
+  image: nexus.itecos.com:5000/sbt-docker-build-13:0.1
   stage: build
   before_script:
     - git branch
