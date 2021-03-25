@@ -1,11 +1,10 @@
 lazy val core = (project in file("."))
-  .settings(globalSettings)
-  .settings(performance)
   .disablePlugins(AssemblyPlugin)
   .aggregate(
     common,
     hrTelegramBot,
-    orcTelegramBot
+    orcTelegramBot,
+    orcViberBot
   )
 
 lazy val common = (project in file("common"))
@@ -18,7 +17,6 @@ lazy val common = (project in file("common"))
 
 lazy val hrTelegramBot = (project in file("hrTelegramBot"))
   .settings(globalSettings)
-  .settings(performance)
   .settings(ThisBuild / name := "HrTelegramBot")
   .settings(mainClass in (Compile, run) := Some("Launcher"))
   .settings(libraryDependencies ++= dependencies.cache)
@@ -28,17 +26,18 @@ lazy val hrTelegramBot = (project in file("hrTelegramBot"))
 
 lazy val orcTelegramBot = (project in file("orcTelegramBot"))
   .settings(globalSettings)
-  .settings(performance)
   .settings(ThisBuild / name := "TelegramBot")
   .settings(mainClass in (Compile, run) := Some("ru.kvp24.Launcher"))
   .settings(mainClass in assembly := Some("ru.kvp24.Launcher"))
   .settings(libraryDependencies += dependencies.telegram)
+  .settings(assemblyJarName in assembly := "orcTelegramBot")
   .settings(assemblyConfig)
+  .settings(dockerBuild)
+  .enablePlugins(DockerPlugin)
   .dependsOn(common)
 
 lazy val orcViberBot = (project in file("orcViberBot"))
   .settings(globalSettings)
-  .settings(performance)
   .settings(ThisBuild / name := "ViberBot")
   .settings(mainClass in (Compile, run) := Some("ru.kvp24.Launcher"))
   .settings(mainClass in assembly := Some("ru.kvp24.Launcher"))
@@ -49,12 +48,8 @@ lazy val orcViberBot = (project in file("orcViberBot"))
 
 lazy val globalSettings = Seq(
   ThisBuild / organization := "ru.kvp24.com",
-  ThisBuild / version := "0.1-SNAPSHOT",
+  ThisBuild / version := "0.1",
   ThisBuild / scalaVersion := "2.13.4",
-)
-
-lazy val performance = Seq(
-  ThisBuild / watchBeforeCommand := Watch.clearScreen
 )
 
 lazy val dependencies = new {
@@ -100,15 +95,28 @@ lazy val commonDependencies = Seq(
 )
 
 lazy val assemblyConfig = Seq(
-  assemblyExcludedJars in assembly := {
-    (fullClasspath in assembly).value.filter { f =>
-      f.data.getPath.contains("javax/activation")
-    }
-  },
   assemblyMergeStrategy in assembly := {
     case PathList("META-INF", xs @ _*) => MergeStrategy.discard
     case PathList("module-info.class") => MergeStrategy.discard
+    case path if path.contains("activation") => MergeStrategy.first
     case "application.conf" => MergeStrategy.concat
     case keep => (assemblyMergeStrategy in assembly).value(keep)
+  }
+)
+
+lazy val dockerBuild = Seq(
+  docker / dockerfile := {
+
+    val path = "/root/bot/"
+    val artifact: File = assembly.value
+    val artifactPath = path + artifact.name
+
+    new Dockerfile {
+      from("adoptopenjdk/openjdk15")
+      workDir(path)
+      copy(artifact, artifactPath)
+
+      entryPoint("java", "-jar", artifactPath)
+    }
   }
 )

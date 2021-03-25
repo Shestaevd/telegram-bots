@@ -14,9 +14,9 @@ class StateManager[In <: IncomingMessage[_], Out <: OutgoingMessage[_]](expire: 
   def messageReceive(update: In): Option[Out] =
     cache
       .asMap()
-      .find { case (chat, _) => chat.equals(update.key) }
-      .map(_._2)
-      .fold(initState.handle(update))(_.handle(update))
+      .collectFirst { case (chat, state) if chat.equals(update.key) => state }
+      .getOrElse(initState)
+      .handle(update)
       .map {
         case Reply(sendMessage, state) =>
           cache.put(update.key, state)

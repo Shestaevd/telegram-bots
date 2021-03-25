@@ -18,8 +18,8 @@ class EmailCollectState(phone: String) extends State[IncomingUpdate, OutgoingSen
     val sendMessage = new SendMessage()
 
     Option(update.getMessage)
-      .map(_.getText)
-      .orElse(Option(update.getCallbackQuery).map(_.getData))
+      .flatMap(msg => Option(msg.getText))
+      .orElse(Option(update.getCallbackQuery).flatMap(cq => Option(cq.getData)))
       .map {
         case mail if mail.matches("^(.+)@(.+)$") || Option(update.getCallbackQuery).exists(_.getData.equals("email_refused")) =>
 

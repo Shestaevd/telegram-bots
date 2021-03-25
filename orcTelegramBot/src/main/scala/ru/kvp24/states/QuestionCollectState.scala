@@ -15,7 +15,7 @@ class QuestionCollectState(phone: String, mail: String) extends State[IncomingUp
 
     val update = incomingUpdate.incomingMessage
 
-    Option(update.getMessage).map(_.getText).map { text =>
+    Option(update.getMessage).flatMap(msg => Option(msg.getText)).map { text =>
       val reply = """Благодарим вас за обращение. Мы перезвоним вам в рабочее время."""
 
       val sendMessage = new SendMessage()

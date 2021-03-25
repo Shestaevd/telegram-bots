@@ -32,16 +32,10 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     public static void create(String token, String botName, State<IncomingUpdate, OutgoingSendMessage> initState) {
         TelegramBot bot = new TelegramBot(token, botName, initState);
-        TelegramBotsApi telegramBotsApi = null;
+        TelegramBotsApi telegramBotsApi;
         try {
             telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
-        try {
-            if (telegramBotsApi != null) {
-                telegramBotsApi.registerBot(bot);
-            }
+            telegramBotsApi.registerBot(bot);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
@@ -59,7 +53,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (TimeUtils.isNightTime()) {
+//        if (TimeUtils.isNightTime()) {
             Utils.extractChatId(update).foreach(chatId -> {
                 Option<OutgoingSendMessage> reply = handler.messageReceive(IncomingUpdate.apply(chatId, update));
                 if (reply.isDefined())
@@ -68,11 +62,11 @@ public class TelegramBot extends TelegramLongPollingBot {
                         toSend.setChatId(chatId);
                         execute(toSend);
                     } catch (TelegramApiException exception) {
-                        exception.printStackTrace();
                         Logger.error("Error occurred during reply execution " + reply.get().toString());
+                        exception.printStackTrace();
                     }
                 return null;
             });
-        }
+//        }
     }
 }

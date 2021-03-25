@@ -1,0 +1,13 @@
+image: alpine
+
+stages:
+  - build
+
+build:
+  image: docker:latest
+  stage: build
+  before_script:
+    - git branch
+  script:
+    - sbt "project orcTelegramBot" docker
+    - docker image ls

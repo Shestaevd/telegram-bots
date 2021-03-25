@@ -9,7 +9,7 @@ class InitState extends State[IncomingUpdate, OutgoingSendMessage] {
 
   override def handle(incomingUpdate: IncomingUpdate): Option[Reply[IncomingUpdate, OutgoingSendMessage]] = {
     Option(incomingUpdate.incomingMessage.getMessage)
-      .map(_.getText)
+      .flatMap(m => Option(m.getText))
       .map { _ =>
 
         val reply =

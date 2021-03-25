@@ -21,7 +21,7 @@ class PhoneCollectState extends State[IncomingUpdate, OutgoingSendMessage] {
     val sendMessage = new SendMessage()
     val update = incomingUpdate.incomingMessage
 
-    Option(update.getMessage).map(_.getText) match {
+    Option(update.getMessage).flatMap(msg => Option(msg.getText)) match {
       case Some(number) if number.matches("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$") =>
         val reply = """Укажите ваш email"""
 

@@ -8,6 +8,7 @@ import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.server.Directives
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import ru.kvp24.util.AkkaSystem._
+import ru.kvp24.util.TimeUtils
 import spray.json.{DefaultJsonProtocol, RootJsonFormat, enrichAny}
 
 import scala.concurrent.Future
@@ -36,14 +37,15 @@ class Server(interface: String, port: Int, token: String)(
       concat(
         post {
           path("index") {
-            entity(as[Receive]) { receive =>
-
-            println(receive)
-
-              receiveHandlers
-                .get("index")
-                .map(_(receive))
-                .foreach(sendReplyAkka)
+              entity(as[Receive]) { receive =>
+              println("--------------------------------")
+              println(receive)
+              if (TimeUtils.isNightTime)
+                receiveHandlers
+                  .get("index")
+                  .map(_(receive))
+                  .foreach(sendReplyAkka)
+              println("--------------------------------")
               complete(StatusCodes.OK)
             }
           }
@@ -62,7 +64,6 @@ class Server(interface: String, port: Int, token: String)(
     }
 
     println(json.toString())
-
     Http().singleRequest(
       HttpRequest(
         method = HttpMethods.POST,
@@ -75,9 +76,8 @@ class Server(interface: String, port: Int, token: String)(
         RawHeader("x-viber-auth-token", token),
         RawHeader("charset", "utf-8")
       )
-    ).onComplete(ok => println(Unmarshal(ok.get.entity).to[String]))
+    )
   }
-
 }
 
 object Server {
