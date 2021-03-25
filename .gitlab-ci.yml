@@ -8,6 +8,7 @@ build:
   stage: build
   before_script:
     - git branch
+    - docker -v
   script:
     - sbt "project orcTelegramBot" docker
     - docker image ls
