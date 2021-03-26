@@ -12,11 +12,9 @@ stages:
       entrypoint:
         - /bin/sh
         - -c
-        - dockerd-entrypoint.sh --insecure-registry nexus.itecos.com:5000 --insecure-registry registry.sel.itecos.com:5000 || exit
+        - dockerd-entrypoint.sh --insecure-registry nexus.itecos.com:5001 --insecure-registry registry.sel.itecos.com:5001 || exit
 
-
-
-build:
+orcTelegramBot:build:
   image: nexus.itecos.com:5000/sbt-docker-build-13:0.1
   extends: .docker_support
   stage: build
@@ -24,5 +22,5 @@ build:
     - git branch
     - docker -v
   script:
-    - sbt "project orcTelegramBot" docker
+    - sbt "project orcTelegramBot" docker:publish
     - docker image ls

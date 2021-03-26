@@ -1,3 +1,5 @@
+import com.typesafe.sbt.packager.docker.DockerChmodType
+
 lazy val core = (project in file("."))
   .disablePlugins(AssemblyPlugin)
   .aggregate(
@@ -32,8 +34,9 @@ lazy val orcTelegramBot = (project in file("orcTelegramBot"))
   .settings(libraryDependencies += dependencies.telegram)
   .settings(assemblyJarName in assembly := "orcTelegramBot")
   .settings(assemblyConfig)
-  .settings(dockerBuild)
+  .settings(dockerSettings)
   .enablePlugins(DockerPlugin)
+  .enablePlugins(JavaAppPackaging)
   .dependsOn(common)
 
 lazy val orcViberBot = (project in file("orcViberBot"))
@@ -86,7 +89,6 @@ lazy val dependencies = new {
   val mailer = "javax.mail" % "mail" % mailerV
 
   val spray = "com.typesafe.akka" %% "akka-http-spray-json" % sprayV
-
 }
 
 lazy val commonDependencies = Seq(
@@ -104,19 +106,25 @@ lazy val assemblyConfig = Seq(
   }
 )
 
-lazy val dockerBuild = Seq(
-  docker / dockerfile := {
+lazy val nexus = Seq(
+  "Nexus Repo".at("http://nexus.itecos.com/content/repositories/k24cluster").withAllowInsecureProtocol(true),
+)
 
-    val path = "/root/bot/"
-    val artifact: File = assembly.value
-    val artifactPath = path + artifact.name
-
-    new Dockerfile {
-      from("adoptopenjdk/openjdk15")
-      workDir(path)
-      copy(artifact, artifactPath)
-
-      entryPoint("java", "-jar", artifactPath)
-    }
-  }
+lazy val dockerSettings = Seq(
+  packageName in Docker := "k24-orc-telegram-bot",
+  dockerUpdateLatest := true,
+  dockerBaseImage := "adoptopenjdk/openjdk15",
+  dockerRepository := Some("nexus.itecos.com:5001"),
+  daemonUserUid in Docker := None,
+  daemonUser in Docker := "root",
+  dockerUpdateLatest := true,
+  dockerChmodType := DockerChmodType.UserGroupWriteExecute,
+  publishTo := Some("Nexus".at("http://nexus.itecos.com/content/repositories/k24cluster").withAllowInsecureProtocol(true)),
+  resolvers := nexus,
+  credentials += Credentials(
+    "Sonatype Nexus Repository Manager",
+    "nexus.itecos.com",
+    "admin",
+    "admin123"
+  )
 )
