@@ -43,8 +43,6 @@ orcTelegramBot:deploy:
   when: manual
   stage: deploy
   extends: .docker_support
-  needs:
-    - job: orcTelegramBot:build
   before_script:
     - *install_kubectl
     - kubectl config use-context sel
