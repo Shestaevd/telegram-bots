@@ -9,12 +9,12 @@ import ru.kvp24.states.InitState
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
 
-class Bot(unCompleteServer: UnCompleteServer) {
+class Bot(server: UnCompleteServer) {
 
   val stateManager = new StateManager(8.hours, InitState())
 
   def create(): (ru.kvp24.http.Server, Future[ServerBinding]) = {
-    unCompleteServer.unCompleteServer(List("index" -> handle))
+    server.unCompleteServer(List("index" -> handle))
   }
 
   def handle(receive: Receive): UserReply =

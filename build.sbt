@@ -111,7 +111,7 @@ lazy val nexus = Seq(
 )
 
 lazy val dockerSettings = Seq(
-  packageName in Docker := "k24-orc-telegram-bot",
+  packageName in Docker := "kvp24/orc-telegram-bot",
   dockerUpdateLatest := true,
   dockerBaseImage := "adoptopenjdk/openjdk15",
   dockerRepository := Some("nexus.itecos.com:5001"),

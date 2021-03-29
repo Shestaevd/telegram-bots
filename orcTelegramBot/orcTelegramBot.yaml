@@ -1,0 +1,40 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: orc-telegram-bot
+  labels:
+    app: orc-telegram-bot
+spec:
+  selector:
+    app: orc-telegram-bot
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orc-telegram-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orc-telegram-bot
+  template:
+    metadata:
+      labels:
+        app: orc-telegram-bot
+    spec:
+      nodeSelector:
+        nodetype: worker
+      containers:
+        - name: orc-telegram-bot
+          image: nexus.itecos.com:5000/kvp24/orc-telegram-bot:master
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: "1Gi"
+            limits:
+              memory: "1Gi"
+          env:
+            - name: JAVA_TOOL_OPTIONS
+              value: "-Xms30m -Xmx512m -XX:+UseG1GC -XX:MaxHeapFreeRatio=20"
