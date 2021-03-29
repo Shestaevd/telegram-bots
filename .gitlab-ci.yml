@@ -35,8 +35,6 @@ orcTelegramBot:build:
     - git branch
   script:
     - sbt "project orcTelegramBot" docker:publish
-  only:
-    - tags
 
 orcTelegramBot:deploy:
   image: nexus.itecos.com:5000/google/cloud-sdk:284.0.0
