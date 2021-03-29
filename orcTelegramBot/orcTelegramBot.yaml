@@ -28,7 +28,7 @@ spec:
         nodetype: worker
       containers:
         - name: orc-telegram-bot
-          image: nexus.itecos.com:5000/kvp24/orc-telegram-bot:master
+          image: nexus.itecos.com:5001/kvp24/orc-telegram-bot:latest
           imagePullPolicy: Always
           resources:
             requests:
