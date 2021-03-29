@@ -49,7 +49,7 @@ orcTelegramBot:build:
 orcTelegramBot:deploy:
   when: manual
   stage: deploy
-  extends: abstract_deploy
+  extends: .abstract_deploy
   before_script:
     - *install_kubectl
     - kubectl config use-context sel
