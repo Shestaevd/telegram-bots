@@ -31,8 +31,7 @@ stages:
   extends: .docker_support
   when: manual
   image: nexus.itecos.com:5000/google/cloud-sdk:284.0.0
-  needs:
-    - job: build
+
 
 
 orcTelegramBot:build:
@@ -58,3 +57,5 @@ orcTelegramBot:deploy:
     - docker tag nexus.itecos.com:5001/kvp24/orc-telegram-bot:${GIT_TAG} registry.sel.itecos.com:5000/kvp24/orc-telegram-bot:${GIT_TAG}
     - docker push registry.sel.itecos.com:5000/kvp24/orc-telegram-bot:${GIT_TAG}
     - kubectl -n ${PROD_NAMESPACE} set image deployment/orc-telegram-bot orc-telegram-bot=registry.sel.itecos.com:5000/kvp24/orc-telegram-bot:${GIT_TAG}
+  needs:
+    ["orcTelegramBot:build"]
