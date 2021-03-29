@@ -27,16 +27,10 @@ stages:
   - mkdir -p /root/.kube
   - echo -n $KUBE_CONFIG | base64 -d > /root/.kube/config
 
-.abstract_deploy:
-  extends: .docker_support
-  when: manual
-  image: nexus.itecos.com:5000/google/cloud-sdk:284.0.0
-
-
 orcTelegramBot:build:
   image: nexus.itecos.com:5000/sbt-docker-build-13:0.1
-  extends: .docker_support
   stage: build
+  extends: .docker_support
   before_script:
     - git branch
   script:
@@ -45,9 +39,10 @@ orcTelegramBot:build:
     - tags
 
 orcTelegramBot:deploy:
+  image: nexus.itecos.com:5000/google/cloud-sdk:284.0.0
   when: manual
   stage: deploy
-  extends: .abstract_deploy
+  extends: .docker_support
   before_script:
     - *install_kubectl
     - kubectl config use-context sel
