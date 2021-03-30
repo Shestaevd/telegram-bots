@@ -33,7 +33,7 @@ spec:
       containers:
         - name: orc-telegram-bot
           image: nexus.itecos.com:5001/kvp24/orc-telegram-bot:latest
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           resources:
             requests:
               memory: "1Gi"
@@ -41,4 +41,4 @@ spec:
               memory: "1Gi"
           env:
             - name: JAVA_TOOL_OPTIONS
-              value: "-Xms30m -Xmx512m -XX:+UseG1GC -XX:MaxHeapFreeRatio=20"
+              value: "-Xmx512m"

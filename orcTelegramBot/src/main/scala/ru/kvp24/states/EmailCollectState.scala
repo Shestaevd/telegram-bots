@@ -23,7 +23,7 @@ class EmailCollectState(phone: String) extends State[IncomingUpdate, OutgoingSen
       .map {
         case mail if mail.matches("^(.+)@(.+)$") || Option(update.getCallbackQuery).exists(_.getData.equals("email_refused")) =>
 
-          val reply = "Напишите ваше обращение"
+          val reply = "Какой вопрос вы хотите задать? "
           sendMessage.setText(reply)
 
           CacheStore.scheduler.update(incomingUpdate.key, 15.minutes)(

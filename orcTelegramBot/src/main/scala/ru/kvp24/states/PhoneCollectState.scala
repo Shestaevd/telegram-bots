@@ -23,7 +23,7 @@ class PhoneCollectState extends State[IncomingUpdate, OutgoingSendMessage] {
 
     Option(update.getMessage).flatMap(msg => Option(msg.getText)) match {
       case Some(number) if number.matches("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$") =>
-        val reply = """Укажите ваш email"""
+        val reply = """Оставьте ваш e-mail и, в случае, если наш специалист не сможет до вас дозвониться, вам будет направлено письмо."""
 
         sendMessage.setText(reply)
 

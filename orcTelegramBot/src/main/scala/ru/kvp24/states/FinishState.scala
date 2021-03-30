@@ -10,7 +10,7 @@ class FinishState extends State[IncomingUpdate, OutgoingSendMessage] {
     val update = incomingUpdate.incomingMessage
 
     Option(update.getMessage) map { _ =>
-      val reply = "Мы уже приняли ваше обращение и ответим на него в рабочее время"
+      val reply = "Обращение уже принято, специалист свяжется с вами в рабочее время."
 
       val sendMessage = new SendMessage()
       sendMessage.setText(reply)
