@@ -53,7 +53,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-//        if (TimeUtils.isNightTime()) {
+        if (TimeUtils.isNightTime()) {
             Utils.extractChatId(update).foreach(chatId -> {
                 Option<OutgoingSendMessage> reply = handler.messageReceive(IncomingUpdate.apply(chatId, update));
                 if (reply.isDefined())
@@ -67,6 +67,6 @@ public class TelegramBot extends TelegramLongPollingBot {
                     }
                 return null;
             });
-//        }
+        }
     }
 }
