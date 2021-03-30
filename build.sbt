@@ -52,7 +52,7 @@ lazy val orcViberBot = (project in file("orcViberBot"))
 lazy val globalSettings = Seq(
   ThisBuild / organization := "ru.kvp24.com",
   ThisBuild / scalaVersion := "2.13.4",
-  version := "0.2",
+  version := "0.3",
 )
 
 lazy val dependencies = new {
