@@ -7,6 +7,10 @@ metadata:
 spec:
   selector:
     app: orc-telegram-bot
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: http
 
 ---
 
