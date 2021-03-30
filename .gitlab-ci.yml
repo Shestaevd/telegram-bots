@@ -21,7 +21,7 @@ stages:
       entrypoint:
         - /bin/sh
         - -c
-        - dockerd-entrypoint.sh --insecure-registry nexus.itecos.com:5001 --insecure-registry registry.sel.itecos.com:5001 || exit
+        - dockerd-entrypoint.sh --insecure-registry nexus.itecos.com:5001 --insecure-registry registry.sel.itecos.com:5000 || exit
 
 .install_kubectl: &install_kubectl
   - mkdir -p /root/.kube
