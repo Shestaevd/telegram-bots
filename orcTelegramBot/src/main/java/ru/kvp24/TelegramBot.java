@@ -15,6 +15,8 @@ import ru.kvp24.util.TimeUtils;
 import scala.Option;
 import scala.concurrent.duration.FiniteDuration;
 
+import java.util.Calendar;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 public class TelegramBot extends TelegramLongPollingBot {
@@ -67,6 +69,10 @@ public class TelegramBot extends TelegramLongPollingBot {
                     }
                 return null;
             });
+        }
+        if (update.getMessage().getText().equals("get_server_time")) {
+            Logger.info("old" + Calendar.getInstance().toString());
+            Logger.info("new" + Calendar.getInstance(TimeZone.getTimeZone("Europe/Samara")).toString());
         }
     }
 }
