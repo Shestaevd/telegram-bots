@@ -71,8 +71,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             });
         }
         if (update.getMessage().getText().equals("get_server_time")) {
-            Logger.info("old" + Calendar.getInstance().toString());
-            Logger.info("new" + Calendar.getInstance(TimeZone.getTimeZone("Europe/Samara")).toString());
+            Logger.info(Calendar.getInstance(TimeZone.getTimeZone("Europe/Samara")).toString());
         }
     }
 }
